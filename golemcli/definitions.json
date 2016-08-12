@@ -1,0 +1,32 @@
+[
+    {
+        "matchers": [
+            {
+                "domain": [
+		    "jekyllrb.com"
+		]
+            }
+        ],
+        "stages": [
+            [
+                {
+                    "action": "attribute",
+                    "name": "links",
+                    "config": {
+                        "selector": "a",
+                        "attribute": "href"
+                    }
+                }
+            ],
+            [
+                {
+                    "action": "link",
+                    "name": "sendLinks",
+                    "config": {
+                        "link": "stage|0|links"
+                    }
+                }
+            ]
+        ]
+    }
+]

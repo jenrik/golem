@@ -1,0 +1,7 @@
+FROM golang:1.6
+
+ADD . /go/src/github.com/jenrik/golem
+RUN go get github.com/jenrik/golem/golem-worker/...
+RUN go install github.com/jenrik/golem/golem-worker
+
+ENTRYPOINT /go/bin/golem-worker

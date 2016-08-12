@@ -1,0 +1,31 @@
+version: '2'
+services:
+    storage:
+        build:
+            context: .
+            dockerfile: docker/Dockerfile-storage
+        environment:
+            POSTGRES_PASSWORD: "golem"
+            POSTGRES_USER: "golem"
+        ports:
+            - "5432:5432"
+    queue:
+        image: "rabbitmq:3-management"
+        ports:
+            - "8080:15672"
+            - "5672:5672"
+#    worker:
+#        build:
+#            context: .
+#            dockerfile: docker/Dockerfile-worker
+#        environment:
+#            PGSSLMODE: 'disable'
+#            GOLEM_STORAGE: 'postgresql://golem:golem@storage/golem'
+#            GOLEM_QUEUE: 'amqp://queue/'
+#            GOLEM_WORKERS: 4
+#            GOLEM_DATA_STORE: '/golem-data'
+#        volumes:
+#            - "./tmp:/golem-data"
+#        links:
+#            - storage
+#            - queue
