@@ -1,7 +1,6 @@
 package golem
 
 import (
-	"errors"
 	"net/url"
 	"strconv"
 	"strings"
@@ -52,39 +51,45 @@ func (matcher *PageMatcher) Check(link *url.URL) (bool, error) {
 	var check = false
 	// Path
 	if matcher.Path != nil && len(matcher.Path) > 0 {
-		var segments = strings.Split(link.RawPath, "/")
+		path := link.Path
+		if path[0] == 47 {
+			path = path[1:]
+		}
+		var segments = strings.Split(path, "/")
 		for _, pathmatcher := range matcher.Path {
 			// Check max
 			smax, ok := pathmatcher["max"]
+			var max int
 			if ok {
 				max, err := strconv.Atoi(smax)
 				if err != nil {
 					return false, err
 				}
-				if max >= len(segments) {
+				if max < len(segments) {
 					continue
 				}
+			} else {
+				max = len(segments) - 1
 			}
 			// Check min
-			smin, ok := pathmatcher["max"]
+			smin, ok := pathmatcher["min"]
 			var min int
 			if ok {
 				min, err := strconv.Atoi(smin)
 				if err != nil {
 					return false, err
 				}
-				if min >= len(segments) {
+				if min > len(segments) {
 					continue
 				}
+			} else {
+				min = 0
 			}
 			// Check segment
 			var innerCheck = true
 			for num, segment := range pathmatcher {
 				if n, err := strconv.Atoi(num); err == nil {
-					if n < min-1 || n > len(segments)-1 {
-						return false, errors.New("Path segment identifier out of bounds")
-					}
-					if segments[n] != segment {
+					if n < min || n > max || segments[n] != segment {
 						innerCheck = false
 					}
 				}

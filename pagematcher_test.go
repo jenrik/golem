@@ -69,12 +69,15 @@ func TestCheck(t *testing.T) {
 			match, err := test.Matcher.Check(url)
 			if err != nil {
 				t.Error(err)
+				continue
 			}
 			if match != test.Match {
-				t.Logf("Check didn't match expected result for test %v", i)
+				t.Errorf("Check didn't match expected result for test %v", i)
+				continue
 			}
 		} else {
 			t.Error(err)
+			continue
 		}
 	}
 }
